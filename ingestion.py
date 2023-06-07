@@ -5,7 +5,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import Pinecone
 import pinecone
 
-from CONSTS import INDEX_NAME
+from consts import INDEX_NAME
 
 pinecone.init(
     api_key=os.environ["PINECONE_API_KEY"],
@@ -30,6 +30,11 @@ def ingest_docs() -> None:
 
     print(f"Going to insert {len(documents)} documents into Pinecone")
     embeddings = OpenAIEmbeddings()
+
+    index = pinecone.Index(index_name=INDEX_NAME)
+    index.delete(deleteAll=True)
+
+    print("********* Deleted all vectors from Pinecone vectorstore *********")
 
     Pinecone.from_documents(documents, embeddings, index_name=INDEX_NAME)
     print("********* Added to Pinecone vectorstore *********")
